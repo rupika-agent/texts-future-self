@@ -11,6 +11,7 @@ randomness, no time, no network, standard library only.
 """
 
 import os
+import sys
 
 ENTRY = (
     "Future you here. You finally stopped saying 'I'll start Monday' "
@@ -27,11 +28,14 @@ assert "\n" not in ENTRY, "entry must be a single line"
 
 
 def main():
-    os.makedirs("/output", exist_ok=True)
-    with open("/output/entry.txt", "w", encoding="utf-8") as f:
+    # Optional output path, so the entry can be previewed locally
+    # without touching /output: `python3 main.py /tmp/entry.txt`.
+    out_path = sys.argv[1] if len(sys.argv) > 1 else "/output/entry.txt"
+    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
         f.write(ENTRY)
     # Read back what was written: the judged file must hold this text.
-    with open("/output/entry.txt", "r", encoding="utf-8") as f:
+    with open(out_path, "r", encoding="utf-8") as f:
         assert f.read() == ENTRY, "entry.txt does not match ENTRY"
     print(ENTRY)
 
